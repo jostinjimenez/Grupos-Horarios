@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1 class="text-center">{{ competencia.nombre }}</h1>
+
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'grupos' competencia.id %}">Grupos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Partidos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Equipos</a>
+        </li>
+    </ul>
+
+
+
+
+
+{% endblock %}
+```
