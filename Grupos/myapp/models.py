@@ -19,6 +19,7 @@ class Equipo(models.Model):
 
 class Partido(models.Model):
     fecha = models.DateTimeField()
+    hora = models.TimeField(default='00:00:00')
     resultado = models.CharField(max_length=100)
     equipo_local = models.ForeignKey(Equipo, related_name='partidos_local', on_delete=models.CASCADE)
     equipo_visitante = models.ForeignKey(Equipo, related_name='partidos_visitante', on_delete=models.CASCADE)

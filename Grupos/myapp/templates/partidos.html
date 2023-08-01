@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Partidos por Grupos</h1>
+    <br>
+    <form action="{% url 'generar_partidos' competencia.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Generar Partidos</button>
+    </form>
+    <br>
+    <h1>Programación de Partidos</h1>
+
+    {% for grupo in grupos %}
+        <h2>{{ grupo.nombre }}</h2>
+        {% for partido in grupo.partido_set.all %}
+            <p>Equipo Local: {{ partido.equipo_local.nombre }}</p>
+            <p>Equipo Visitante: {{ partido.equipo_visitante.nombre }}</p>
+            <p>Fecha: {{ partido.fecha }}</p>
+            <br>
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}

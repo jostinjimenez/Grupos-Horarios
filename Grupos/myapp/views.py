@@ -1,19 +1,31 @@
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
 from .models import Competencia, Grupo, Equipo, Partido, Jugador
-from .utils import sortear_equipos_en_grupos
+from .utils import sortear_equipos_en_grupos, generar_programacion_partidos
 
 
 # Create your views here.
+
+def generar_partidos(request, competencia_id):
+    competencia = get_object_or_404(Competencia, pk=competencia_id)
+    generar_programacion_partidos(competencia_id)
+
+    # Redireccionar a la vista 'partidos'
+    return redirect(reverse('partidos', kwargs={'competencia_id': competencia_id}))
+
 
 def sortear_grupos(request):
     competencias = Competencia.objects.all()
     for competencia in competencias:
         sortear_equipos_en_grupos(competencia.id)
 
-    return redirect('grupos', id=competencia.id)
+    return redirect('grupos', pk=   competencia.id)
 
 
-def home(request, ):
+def home(request):
     competencias = Competencia.objects.all()
     return render(request, 'home.html', {'competencias': competencias})
 
@@ -28,15 +40,20 @@ def detalles_competencia(request, competencia_id):
     return render(request, 'detalles_competencia.html', {'competencia': competencia})
 
 
-def grupos(request, id):
-    competencia = Competencia.objects.get(pk=id)
+def grupos(request, competencia_id):
+    competencia = Competencia.objects.get(pk=competencia_id)
     grupos = competencia.grupos.all()
     return render(request, 'grupos.html', {'grupos': grupos})
 
 
 def partidos(request, competencia_id):
     competencia = get_object_or_404(Competencia, pk=competencia_id)
-    partidos = Partido.objects.filter(equipo_local__in=competencia.grupos.all())
+    grupos = competencia.grupos.all()
+
+    # Obtenemos todos los partidos relacionados con los grupos de la competencia
+    partidos = Partido.objects.filter(equipo_local__in=grupos.values('equipos__id'),
+                                      equipo_visitante__in=grupos.values('equipos__id'))
+
     return render(request, 'partidos.html', {'competencia': competencia, 'partidos': partidos})
 
 
